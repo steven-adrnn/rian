@@ -1,460 +1,297 @@
-
-QUEUE
-
-constant IDX_UNDEF : integer = -1
-constant CAPACITY : integer = 100
-{ *** Definisi elemen dan address *** }
-
-type ElType : integer
-type ElType: <	id: integer,
-		cost: integer > { elemen Queue }
-
-
-{ *** Definisi Type Queue *** }
-type Queue : < buffer : array [0-CAPACITY-1] of ElType
-idxHead : integer,
-idxTail : integer >
-
-{ Definisi Queue kosong: idxHead = idxTail = IDX_UNDEF }
-
-{ Definisi akses dengan Selektor :
-HEAD(Q), TAIL(Q), IDX_HEAD(Q), IDX_TAIL(Q)
-dengan Q adalah Queue}
-
-
-
-procedure CreateSet (output S : set)
-
-KAMUS LOKAL
-
-ALGORITMA
-S.idxHead <- 0
-
-
-procedure add(input/output S: Set, input X : Eltype)
-
-KAMUS LOKAL
-
-ALGORITMA
-if (isIn(S, X)) then
-output (“Elemen sudah ada dalam set”)
-else
-S[Length(S)] <- X
-
-
-function union(S1, S2: Set) -> Set
-
-KAMUS LOKAL
-S3 : Set
-
-ALGORITMA
-i traversal [0.. Length(S1)]
-S3[i] <- S1[i]
-i traversal [0 .. Length(S2)-1]
-if not isIn(S1, S2[i]) then
-S3[Length(S3)] <- S2[i]
-else
-continue
-
-
-boolean isEmpty(Queue Q) {
-return (idxHead(Q) == IDX_UNDEF) && (idxTail(Q) == IDX_UNDEF);
-}
-
-
-boolean isFull(Queue Q) {
-return (idxHead(Q) == 0) && (idxTail(Q) == CAPACITY-1);
-}
-
-	
-int length(Queue Q) {
-int x, length;
-x = idxTail(Q) – idxHead(Q) + CAPACITY;
-length = (x mod CAPACITY) + 1;
-return length;
-}
-
-
-void CreateQueue(Queue Q){
-idxHead = IDX_UNDEF;
-idxTail = IDX_UNDEF;
-}
-
-
-void enqueue(Queue *Q, ElType val) {
-/* Q tidak penuh */
-if (isEmpty(*Q)) {
-idxHead(*Q) = 0;
-idxTail(*Q) = 0;
-} 
-else {
-Q.buffer[idxTail+1] = val;
-idxTail(*Q) = idxTail(*Q) + 1;
-}
-}
-
-
-void dequeue(Queue *Q, ElType val) {
-/* Q tidak kosong */
-val = Q.buffer[idxHead];
-if (idxHead(*Q) == idxTail(*Q)) {
-idxHead(*Q) = IDX_UNDEF;
-idxTail(*Q) = IDX_UNDEF;
-}
-else{
-idxHead(*Q) = idxHead(*Q) + 1;
-}
-}
-q.buffer[q.idxTail].id ← val.id
-q.buffer[q.idxTail].cost ← val.cost
-j ← q.idxTail
-k ← q.idxTail-1
-while (q.buffer[k].cost > q.buffer[j].cost) do
-	temp.id ← q.buffer[j].id
-	temp.cost ← q.buffer[j].cost
-	q.buffer[j].id ← q.buffer[k].id
-	q.buffer[j].cost ← q.buffer[k].cost
-	q.buffer[k].id ← temp.id
-	q.buffer[k].cost ← temp.cost
-	j ← j-1
-	k ← k-1
-
-Constant BINER = 0
-Type Biner :<buffer : array {0..MAX-1] of BINER, length : integer>
-Constant MARK = “.”
-Constant BLANK = “ “
-
-procedure splitToThree (input Q : Queue, input ratio : real, output Q1,Q2,Q3 : Queue)
-KAMUS LOKAL
-val, Q_length, Q1_length, Q2_length, Q3_length, Qth : integer
-temp1, temp2 : Queue
-ALGORITMA
-	CreateQueue(temp1)
-	CreateQueue(temp2)
-	Q_length<-0
-	val<-0
-
-	while not isEmpty(Q) do
-		deqeueue(Q,val)
-		enqueue(temp1,val)
-		enqueue(temp2,val)
-		Q_length<-Q_length+1
-
-	while not isEmpty(temp1) do
-		deqeueue(temp1,val)
-		enqueue(Q,val)
-
-	Q1_length <- ceil(ratio*Q_length)
-	Q2_length <- (Q_length-Q1_length)/2
-	if (Q_length-Q1_length)%2=1 then
-		Q3_length<-Q2_length+1
-	else
-		Q3_length<-Q2_length
-	
-	cnt1 <- 0
-	cnt2 <- 0
-	cnt3 <- 0
-	Qth <- 0
-	while not isEmpty(temp2) do
-		deqeueue(temp2,val)
-		if Qth=0 and cnt1<Q1.length then
-			enqueue(Q1,val)
-			cnt1<-cnt1+1
-		else if Qth=1 and cnt2<Q2.length then
-			enqueue(Q2,val)
-			cnt2<-cnt2+1
-		else if (Qth=2 and cnt3<Q3.length) then
-			enqueue(Q3,val)
-			cnt3<-cnt3+1
-		Qth<-(Qth+1)%3
-
-
-procedure roundRobin (input/output q: queue, input t: integer)
-{Proses	: memproses elemen antrian q secara round robin}
-{IS	: q tidak kosong, t adalah waktu yang tersedia untuk memproses setiap elemen}
-{FS	: elemen e pada posisi HEAD dihapus dari q.
-	  Jika cost e ≤ t maka ditampilkan “<id> telah selesai diproses”.
-	  Jika cost e > t maka e disisipkan kembali sebagai tail q
-	  dengan cost berkurang sebesar t }
-KAMUS LOKAL
-i : integer
-head_val : ElType
-
-ALGORITMA
-i ← q.idxHead
-head_val.id ← 0
-head_val.cost ← 0
-
-repeat
-	dequeue(q, head_val)
-	if (head_val.cost ≤ t) then
-		output(head_val.id + " telah selesai diproses")
-	else 
-		head_val.cost ← head_val.cost - t
-		enqueue(q, head_val)
-	i ← i + 1
-until (i = q.idxTail-1)
-
- 
-MESIN KATA
-
-Program CekOpensesame
-
-KAMUS
-	USE MesinKata1
-
-ALGORITMA
-startKata
-if endKata do
-	output("Pita karakter kosong")
-else
-	{inisialisasi kataOpensesame}
-	kataOpensesame.buffer[0] <- 'O'
-	kataOpensesame.buffer[1] <- 'p'
-	kataOpensesame.buffer[2] <- 'e'
-	kataOpensesame.buffer[3] <- 'n'
-	kataOpensesame.buffer[4] <- 's'
-	kataOpensesame.buffer[5] <- 'e'
-	kataOpensesame.buffer[6] <- 's'
-	kataOpensesame.buffer[7] <- 'a'
-	kataOpensesame.buffer[8] <- 'm'
-	kataOpensesame.buffer[9] <- 'e'
-	kataOpensesame.length <- 10
-
-	i<-0
-	diff <- false
-	while not endKata and i<10 and not diff do 
-		if currentKata.buffer[0]=kataOpensesame[i]
-			i<-i+1
-		else
-			diff<-true
-		advKata
-	if not diff then
-		output("Open sesame!")
-	else
-		output("Bukan pita yang tepat")
-
-
-
-
-
-
-
-
-
-
-Program FK1
-{ Program untuk menghitung frekuensi kemunculan kata pertama dalam pita }
-
-KAMUS
-USE MesinKata1
-constant N_MAX: integer = 50
-Kata1: Kata
-i, nbK1, totalK: integer
-
-ALGORITMA
-startKata
-if ( not endKata ) then
-i traversal [0..currentKata.length-1]
-Kata1.buffer[i] ← currentKata.buffer[i]
-Kata1.length ← currentKata.length
-nbK1 ← 1
-totalK ← 1
-advKata
-while not endKata do
-if (isKataEqual(currentKata, Kata1)) then
-nbK1 ← nbK1 + 1
-totalK ← totalK + 1
-output(“Frekuensi kata pertama adalah “+nbK1+”/”+totalK)
-
-else { endKata }
-output(“Pita kosong”)
-
-
-
-
-Program Anagram
-{ Program yang membaca sebuah pita karakter, dan menuliskan ke layar
-ada berapa banyak kata yang ANAGRAM dengan kata pertama pada pita karakter
-tersebut (tidak termasuk kata pertama). }
-
-KAMUS
-USE MesinKata1
-function isAnagram(k1, k2: Kata) → boolean
-kata1: Kata
-totalK: integer
-
-ALGORITMA
-startKata
-kata1 ← currentKata
-advKata
-totalK ← 0
-while (not endKata) do
-if (isAnagram(kata1, currentKata) then
-total ← total + 1
-advKata
-else
-advKata
-output(total)
-
-
-function isAnagram(k1,k2: Kata) → Boolean
-
-KAMUS LOKAL
-i,j : integer
-frekuensi: array [0..N_MAX -1] of integer
-
-ALGORITMA
-If (k1.length != k2.length) then
-→ False
-else
-i traversal [0..N_MAX-1]
-frekuensi[i] ← 0
-i traversal [0..k1.length-1]
-kondisi ← False
-j traversal [0..x.length-1]
-if (x.buffer[i] = y.buffer[j] and frekuensi[j] == 0) then
-kondisi ← True
-frekuensi[j] ← frekuensi[j] +1
-if not kondisi then
-→ False
-→ True
-
-	
-
-
-
-
-
-
-
-
-
-Program Mesin Token
-{ menuliskan ekspresi matematika dalam pita ke layar }
-
-KAMUS
-	USE MesinKata1
-	i, j : integer
-	newArr : array[0..N_MAX-1] of Kata
-	needBrackets : boolean
-ALGORITMA
-	i ← 0
-	startKata
-	while (not endKata) do
-		if (not isOperator(currentKata)) then
-			newArr[i].length ← currentKata.length
-			j traversal [0..(currentKata.length-1)]
-				newArr[i].buffer[j] ← currentKata.buffer[j]
-		else
-			newArr[i-2] ← PostfixToInfix(newArr[i-2], newArr[i-1], currentKata, needBrackets)
-		
-		i ← i -1
-		needBrackets ← false
-	output(newArr[0])
-
-function PostfixToInfix (o1, o2, op: Kata, brackets: boolean) → Kata
-
-KAMUS LOKAL
-	i, j : integer
-	out : Kata
-ALGORITMA
-	i ←0
-	if (brackets) then
-		out.buffer[i] ← “(“
-		i ← i + 1
-	j traversal [0..(o1.length-1)]
-		out.buffer[i] ← o1.buffer[j]
-		i ← i + 1
-	out.buffer[i] ← BLANK 
-	i ← i + 1
-	out.buffer[i] ← op.buffer[0]
-	i ← i + 1
-	out.buffer[i] ← BLANK
-
-	j traversal [0..(o2.length-1)]
-		out.buffer[i] ← o2.buffer[j]
-		i ← i + 1
-	if (brackets) then
-		out.buffer[i] ← “)”
-		i ← i + 1
-	out.length ← i
-	→ out
-
-function isOp (token: Kata) → boolean
-KAMUS LOKAL
-ALGORITMA
-	→ (token.buffer[0] = “*”) or (token.buffer[0] = “/”) or (token.buffer[0]=”+”) or (token.buffer[0] = “-“) or (token.buffer[0] = “^”)
-
- 
-MATRIX
 #include <stdio.h>
-#include <stdbool.h>
+#include "boolean.h"
+#include "stack.h"
 
-#define UNDEF -9999
-#define ROW_CAP 100
-#define COL_CAP 100
+/* ************ Prototype ************ */
+/* *** Konstruktor/Kreator *** */
+void CreateEmpty(Stack* S){
+    Top(*S) = Nil;
+}
+/* I.S. sembarang; */
+/* F.S. Membuat sebuah stack S yang kosong berkapasitas MaxEl */
+/* jadi indeksnya antara 0..MaxEl-1 (inklusif) */
+/* Ciri stack kosong : TOP bernilai Nil */
 
-typedef int ElType;
+/* ************ Predikat Untuk test keadaan KOLEKSI ************ */
+boolean IsEmpty(Stack S){
+    return Top(S) == Nil;
+}
+/* Mengirim true jika Stack kosong: lihat definisi di atas */
 
-typedef struct {
-    ElType mem[COL_CAP][ROW_CAP];
-    int rowEff;
-    int colEff;
-} Matrix;
+boolean IsFull(Stack S){
+    return Top(S) == MaxEl-1;
+}
+/* Mengirim true jika tabel penampung nilai elemen stack penuh */
 
-void CreateMatrix(Matrix *m, int nRows, int nCols) {
-    m->rowEff = nRows;
-    m->colEff = nCols;
-    int i, j;
-    for (i = 0; i < nCols; ++i) {
-        for (j = 0; j < nRows; ++j) {
-            m->mem[i][j] = UNDEF;
+/* ************ Menambahkan sebuah elemen ke Stack ************ */
+void Push(Stack * S, infotype X){
+    Top(*S)++;
+    InfoTop(*S) = X;
+}
+/* Menambahkan X sebagai elemen Stack S. */
+/* I.S. S mungkin kosong, tabel penampung elemen stack TIDAK penuh */
+/* F.S. TOP bertambah 1, X menjadi TOP yang baru, */
+
+/* ************ Menghapus sebuah elemen Stack ************ */
+void Pop(Stack * S, infotype* X){
+    *X = InfoTop(*S);
+    Top(*S)--;
+}
+/* Menghapus X dari Stack S. */
+/* I.S. S  tidak mungkin kosong */
+/* F.S. X adalah nilai elemen TOP yang lama, TOP berkurang 1 */
+
+
+
+///////////////////////////////////////////divide//////////////////////////////////////////////////////////////
+
+#include "stack.h"
+
+void divideStack(Stack *s, Stack *oddS, Stack *evenS){
+    Stack tempS;
+    infotype to_temp, to_real;
+
+    CreateEmpty(&tempS);
+
+    while (!IsEmpty(*s)){
+        Pop(s, &to_temp);
+        Push(&tempS, to_temp);
+    }
+    while(!IsEmpty(tempS)){
+        Pop(&tempS, &to_real);
+        if (to_real%2 == 0){
+            Push(evenS, to_real);
+        } else {
+            Push(oddS, to_real);
         }
     }
 }
+/*
+Memisahkan nilai genap dan nilai ganjil dari Stack s.
 
-int getRowEff(Matrix m) {
-    return m.rowEff;
+Awal:
+s: 1,2,3,4
+evenS:
+oddS:
+
+Akhir:
+s: 
+evenS 2,4
+oddS: 1,3
+
+Perhatikan order di dalam stacknya
+
+*/
+
+
+
+
+
+
+
+//////////////////////////////////////aritmatika///////////////////////////////////////////////////////
+
+
+
+
+
+#include "stack.h"
+#include "boolean.h"
+#include "string.h"
+#include "stdlib.h"
+
+boolean isOperator(char input){
+    return (input == '+' || input == '-' || input == '*' || input == '/');
 }
+/* Proses: Mengecek apakah input merupakan operator */
+/*         input adalah operator jika input merupakan salah
+           satu dari berikut:
+                - +
+                - -
+                - *
+                - /
+*/
 
-int getCollEff(Matrix m) {
-    return m.colEff;
-}
-
-bool isMatrixIdxValid(int i, int j) {
-    return i >= 0 && i < COL_CAP && j >= 0 && j < ROW_CAP;
-}
-
-bool isIdxEff(Matrix m, int i, int j) {
-    return i >= 0 && i < m.colEff && j >= 0 && j < m.rowEff;
-}
-
-ElType getElmt(Matrix m, int i, int j) {
-    if (isIdxEff(m, i, j)) {
-        return m.mem[i][j];
+int hitung(int angka1, int angka2, char op){
+    if (op == '+') {
+        return (angka1 + angka2);
+    } else if (op == '-') {
+        return (angka1 - angka2);
+    } else if (op=='*') {
+        return (angka1 * angka2);
     } else {
-        return UNDEF;
+        return (int) (angka1 / angka2);
     }
 }
+/* Proses: Menghitung ekspresi */
+/*
+    Contoh input / output:
+    angka1 : 2
+    angka2 : 10
+    op     : -
 
-ElType vlookup(ElType val, Matrix m, int col) {
-    int i, rowIdx = -1;
+    return : -8 (penjelasan: 2 - 10 = 8)
+*/
 
-    // Mencari baris dengan nilai val di kolom pertama
-    for (i = 0; i < m.rowEff; ++i) {
-        if (m.mem[0][i] == val) {
-            rowIdx = i;
-            break;
+int eval(char *input, int length){
+    Stack operations;
+    int i;
+    infotype operand1, operand2, result;
+
+    CreateEmpty(&operations);
+    for (i = 0; i < length; i++) {
+        // printf("%c", input[i]);
+        if (isOperator(input[i])){
+            Pop(&operations, &operand2);
+            Pop(&operations, &operand1);
+            Push(&operations, (hitung(operand1, operand2, input[i])));
+        } else {
+            Push(&operations, input[i]-'0');
         }
     }
+    Pop(&operations, &result);
+    return result;
+}
+/* Proses: Menghitung keseluruhan ekspresi */
+/* I.S. input adalah string. setiap operand dipastikan < 10 */
+/*
+    Contoh input / output:
+    input   : 23+
+    output  : 5 (penjelasan: ekspresi ekuivalen dengan 2 + 3)
 
-    // Jika val tidak ada di kolom pertama atau col di luar indeks yang valid, kembalikan UNDEF
-    if (rowIdx == -1 || col < 0 || col >= m.colEff) {
-        return UNDEF;
+    input   : 9423+*5/-
+    output  : 5 (penjelasan: ekspresi ekuivalen dengan 9-(4*(2+3))/5)
+
+*/
+
+
+
+
+
+
+
+
+
+////////////////////////////////////browserhistory//////////////////////////////////////////////
+
+
+
+
+
+
+
+// NIM             : 18221048
+// Nama            : Syafiq Ziyadul Arifin
+// Tanggal         : 21 Oktober 2022
+// Topik praktikum : Praktikum 7
+// Deskripsi       : Implementasi dari browserhistory.h
+
+#include <stdio.h>
+#include "browserhistory.h"
+
+void browserHistoryVisit(Stack *openedTab, Stack *history, char *url)
+{
+    Push(openedTab, url);
+    Push(history, url);
+}
+
+char *currentUrl(Stack *openedTab)
+{
+    return InfoTop(*openedTab);
+}
+
+char *browserHistoryBack(Stack *openedTab, Stack *history, int steps)
+{
+    int i;
+    infotype url;
+    for (i = 0; i < steps; i++)
+    {
+        Pop(openedTab, &url);
+        Push(history, url);
     }
-    // Mengambil nilai di kolom ke-col pada baris yang ditemukan tadi
-    return m.mem[col][rowIdx];
+    return currentUrl(openedTab);
+}
+
+char *browserHistoryForward(Stack *openedTab, Stack *history, int steps)
+{
+    int i;
+    infotype url;
+    for (i = 0; i < steps; i++)
+    {
+        Pop(history, &url);
+        Push(openedTab, url);
+    }
+    return currentUrl(openedTab);
+}
+
+void browserHistoryFree(Stack *history)
+{
+    CreateEmpty(history);
+}
+
+
+
+
+
+/////////////////////////////////palindrom//////////////////////////////////////////
+
+
+
+
+
+
+// NIM             : 18221048
+// Nama            : Syafiq Ziyadul Arifin
+// Tanggal         : 21 Oktober 2022
+// Topik praktikum : Pra-praktikum 7
+// Deskripsi       : Menerima masukan sampai mendapat masukan 0,
+//                   cek apakah bilangan palindrom
+
+#include "stack.h"
+
+Stack ReverseStack(Stack s)
+{
+    int temp;
+    Stack S;
+    CreateEmpty(&S);
+    while (!IsEmpty(s))
+    {
+        Pop(&s, &temp);
+        Push(&S, temp);
+    }
+    return S;
+}
+
+int main()
+{
+    int inp;
+    Stack s1;
+    CreateEmpty(&s1);
+    scanf("%d", &inp);
+    while (inp != 0)
+    {
+        Push(&s1, inp);
+        scanf("%d", &inp);
+    }
+    if (!IsEmpty(s1))
+    {
+        int temp1, temp2;
+        boolean isPalindrom = true;
+        Stack s2 = ReverseStack(s1);
+        while (!IsEmpty(s1) && isPalindrom)
+        {
+            Pop(&s1, &temp1);
+            Pop(&s2, &temp2);
+            if (temp1 != temp2)
+                isPalindrom = false;
+        }
+        if (isPalindrom)
+            printf("Palindrom\n");
+        else
+            printf("Bukan Palindrom\n");
+    }
+    else
+        printf("Stack kosong\n");
 }
 
 
@@ -464,164 +301,277 @@ ElType vlookup(ElType val, Matrix m, int col) {
 
 
 
-STACK
-procedure copyStack(input sIn: Stack, output sOut: Stack)
-{ Membuat salinan sOut }
-{ I.S. sIn terdefinisi, sOut sembarang }
-{ F.S. sOut berisi salinan sIn yang identik }
-KAMUS
-  val : ElType
-  temp : Stack
-ALGORITMA
-  createStack(sOut)
-  createStack(temp)
-  val ← 0
-i traversal [sIn.idxTop .. 0]
-  pop(sIn, val)
-  push(Temp, val)
-i traversal [sIn.idxTop .. 0]
-  pop(temp, val)	
-  push(sIn, val)
-  push(sOut, val)
- 
-procedure inverseStack(input/output s: Stack)
-{ Membalik isi suatu stack }
-{ I.S. s terdefinisi }
-{ F.S. Isi s terbalik dari posisi semula }
-KAMUS
-  temp : Stack
-  val, buang : ElType
-  i : integer
-ALGORITMA
-  createStack(temp)
-  val ← 0
-  buang ← 0
-  copyStack(s, temp)
-  i traversal [s.idxTop .. 0]
-    pop(s, buang)
-    i traversal [s.idxTop .. 0]
-      pop(temp, val)
-      push(s, val)
 
-function mergeStack(s1,s2: Stack) → Stack
-{ Menghasilkan sebuah stack yang merupakan hasil penggabungan s1
-dengan s2 dengan s1 berada di posisi lebih “bawah”. Urutan kedua
-stack harus sama seperti aslinya. }
-{ Stack baru diisi sampai seluruh elemen s1 dan s2 masuk ke dalam
-stack, atau jika stack baru sudah penuh, maka elemen yang
-dimasukkan adalah secukupnya yang dapat ditampung. }
-KAMUS
-  S, s1c, s2c : stack
-ALGORITMA
-  createStack(s1c)
-  copyStack(inverseStack(s1), s1c)
-  while ( not (isFull(S)) )
-    pop (s1c, val)
-    push(S, val)
+////////////////////////////////pengurangan////////////////////////////////////////////////////
 
-  createStack(s2c)
-  copyStack(inverseStack(s2), s2c)
-  while ( not (isFull(S)) )
-    pop (s2c, val)
-    push(S, val)
-  → S
 
-function charToInt (operan: Token) → integer
-{ Fungsi mengubah operan dari karakter ke integer }
-KAMUS LOKAL
-  newInt, i : integer;
-ALGORITMA FUNGSI
-  i traversal [0..operan.length-1]
-    if (operan.buffer[i] = '1') then
-      newInt ← newInt + 1
-    else if (operan.buffer[i] = '2') then
-      newInt ← newInt + 2
-    else if (operan.buffer[i] = '3') then
-      newInt ← newInt + 3
-    else if (operan.buffer[i] = '4') then
-      newInt ← newInt + 4
-    else if (operan.buffer[i] = '5') then
-      newInt ← newInt + 5
-    else if (operan.buffer[i] = '6') then
-      newInt ← newInt + 6
-    else if (operan.buffer[i] = '7') then
-      newInt ← newInt + 7
-    else if (operan.buffer[i] = '8') then
-      newInt ← newInt + 8
-    else if (operan.buffer[i] = '9') then
-      newInt ← newInt + 9
-    else { operan.buffer[i] = 0 }
-      newInt ← newInt
-    newInt ← newInt * 10
 
-  → newInt
 
-function intToChar (angka: integer) → Token
-{ Fungsi mengubah angka menjadi token }
-KAMUS LOKAL
-  i, dig, sisa, temp: integer;
-  newTok : Token;
-ALGORITMA FUNGSI
-  dig ← 1
-  temp ← angka
-  while ( temp > 9 ) do
-    temp ← temp // 10
-    dig ← dig+1
 
-  temp ← angka
-  sisa ← 0
-  i ← dig
-  while ( temp > 9 ) do
-    sisa ← temp mod 10
-    if (sisa == 1) then
-      newTok.buffer[i] ← '1'
-    else if (sisa == 2) then
-      newTok.buffer[i] ← '2'
-    else if (sisa == 3) then
-      newTok.buffer[i] ← '3'
-    else if (sisa == 4) then
-      newTok.buffer[i] ← '4'
-    else if (sisa == 5) then
-      newTok.buffer[i] ← '5'
-    else if (sisa == 6) then
-      newTok.buffer[i] ← '6'
-    else if (sisa == 7) then
-      newTok.buffer[i] ← '7'
-    else if (sisa == 8) then
-      newTok.buffer[i] ← '8'
-    else if (sisa == 9) then
-      newTok.buffer[i] ← '9'
-    else { sisa == 0 }
-      newTok.buffer[i] ← '0'
-    temp ← temp // 10
-    i ← i - 1
-        
-    newTok.buffer[i] ← temp
-    newTok.length ← dig
 
-function isOperator(token: Token) → boolean
-{ memeriksa apakah suatu token merupakan operator }
-KAMUS LOKAL
 
-ALGORITMA FUNGSI
-  → (token.buffer[0] = '+' or token.buffer[0] = '*' or token.buffer[0] = '-' or token.buffer[0] = '/')
+// NIM             : 18221048
+// Nama            : Syafiq Ziyadul Arifin
+// Tanggal         : 24 Oktober 2022
+// Topik praktikum : Praktikum 7
+// Deskripsi       : Pengurangan integer yang direpresentasikan
+//                   dengan string (implementasi stack)
 
-function evaluate(op1, op2, operator: Token) → Token
-{ mengevaluasi ekspresi matematika berdasarkan op1, op2, dan operator }
-KAMUS LOKAL
-  hasil, operand1, operand2 : integer
-ALGORITMA
-  hasil ← 0
-  operand1 ← charToInt(op1)
-  operand2 ← charToInt(op2)
-    
-  if (operator = '+') then
-    hasil ← operand1 + operand2
-  else if (operator = '*') then
-    hasil ← operand1 + operand2 
-  else if (operator = '-') then
-    hasil ← operand1 + operand2 
-  else { operator = '/' }
-    hasil ← operand1 / operand2
-    
-  → intToChar(hasil)
+#include <stdio.h>
+#include "stack.h"
+
+int main()
+{
+	char str1[100], str2[100];
+	Stack s1, s2, s;
+	int i = 0, j = 0, k = 0;
+	int temp = 0, temp1, temp2, res;
+	boolean isNeg = false, startNull = true;
+	CreateEmpty(&s1), CreateEmpty(&s2), CreateEmpty(&s);
+	scanf("%s\n%s", str1, str2);
+	while (str1[i] != '\0')
+	{
+		Push(&s1, (int)str1[i] - '0');
+		i++;
+	}
+	while (str2[j] != '\0')
+	{
+		Push(&s2, (int)str2[j] - '0');
+		j++;
+	}
+	if (j > i) isNeg = true;
+	else if (j == i)
+	{
+		while (k <= i && !isNeg)
+		{
+			if (str2[k] > str1[k]) isNeg = true;
+			k++;
+		}
+	}
+	while (!IsEmpty(s1) || !IsEmpty(s2))
+	{
+		if (!IsEmpty(s1)) Pop(&s1, &temp1);
+		else temp1 = 0;
+		if (!IsEmpty(s2)) Pop(&s2, &temp2);
+		else temp2 = 0;
+		
+		if (!isNeg) res = temp1 - temp2 - temp;
+		else res = temp2 - temp1 - temp;
+		if (res < 0) res += 10;
+		Push(&s, res);
+		if ((temp1 < temp2 && !isNeg) || (temp2 < temp1 && isNeg))
+			temp = 1;
+		else if ((temp1 > temp2 && !isNeg) || (temp2 > temp1 && isNeg))
+			temp = 0;
+	}
+	if (isNeg) printf("-");
+	while (!IsEmpty(s))
+	{
+		Pop(&s, &temp);
+		if (startNull && temp != 0) startNull = false;
+		if (!startNull) printf("%d", temp);
+	}
+	if (IsEmpty(s) && startNull) printf("0");
+	printf("\n");
+}
+
+
+
+
+
+
+
+////////////////////////////////////////valid/////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+// NIM             : 18221048
+// Nama            : Syafiq Ziyadul Arifin
+// Tanggal         : 24 Oktober 2022
+// Topik praktikum : Praktikum 7
+// Deskripsi       : Implementasi dari valid.h
+
+#include <stdio.h>
+#include "valid.h"
+
+Stack validParantheses(char* input, int length)
+{
+	int i;
+	Stack s;
+	CreateEmpty(&s);
+	for (i = 0; i < length - 1; i++)
+	{
+		if (input[i] == '(' && input[i+1] == ')')
+		{
+			Push(&s, '(');
+			Push(&s, ')');
+		}
+		else if (input[i] == '{' && input[i+1] == '}')
+		{
+			Push(&s, '{');
+			Push(&s, '}');
+		}
+		else if (input[i] == '[' && input[i+1] == ']')
+		{
+			Push(&s, '[');
+			Push(&s, ']');
+		}
+	}
+	return s;
+}
+
+
+
+
+
+
+////////////////////////ekspresi////////////////////////////////////////////////////
+
+
+
+
+
+#include "mesintoken.h"
+#include "mesinkar.h"
+#include "stackt.h"
+#include <stdio.h>
+
+int main(){
+    STARTTOKEN();
+    IgnoreBlank();
+
+    Stack setek, setek2;
+    CreateEmpty(&setek);
+    CreateEmpty(&setek2);
+
+    int result = 0, finalresult = 0;
+    boolean empty = true;
+
+    while (!EndToken){
+        result = 0;
+        if (empty){
+            empty = false;
+        }
+        if (CToken.tkn == 'b'){
+            Push(&setek, CToken.val);
+            printf("%d\n", CToken.val);
+        } else {
+            int A, B;
+            if (Top(setek) >= 1){
+                Pop(&setek, &B);
+                Pop(&setek, &A);
+            }
+            if (CToken.tkn == '+'){
+                result = A+B;
+                printf("%d + %d\n%d\n", A, B, result);
+            } else if (CToken.tkn == '-'){
+                result = A-B;
+                printf("%d - %d\n%d\n", A, B, result);
+            } else if (CToken.tkn == '*'){
+                result = A*B;
+                printf("%d * %d\n%d\n", A, B, result);
+            } else if (CToken.tkn == '/'){
+                result = A/B;
+                printf("%d / %d\n%d\n", A, B, result);
+            } else if (CToken.tkn == '^'){
+                int i;
+                int base = 1;
+                for (i=0;i<B;i++){
+                    base *= A;
+                }
+                result = base;
+                printf("%d ^ %d\n%d\n", A, B, result);
+            }
+            Push(&setek, result);
+            finalresult = result;
+        }
+
+        IgnoreBlank();
+        ADVTOKEN();
+    }
+
+    if (!IsEmpty(setek)){
+        Pop(&setek, &result);
+    }
+
+    if (empty){
+        printf("Ekspresi kosong\n");
+    } else {
+        printf("Hasil=%d\n", result);
+    }
+}
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////backspace//////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
+#include "stackt.h"
+#include "boolean.h"
+
+int main(){
+    int N,M,i;
+    scanf("%d %d", &N, &M);
+    Stack SN, SM;
+
+    CreateEmpty(&SN);
+    CreateEmpty(&SM);
+    for (i=0;i<(N+M);i++){
+        int X;
+        scanf("%d", &X);
+        if (i < N){
+            if (X == 0){
+                if (Top(SN) != Nil){
+                    Pop(&SN, &X);
+                    continue;
+                }
+            } else {
+                Push(&SN, X);
+            }
+        } else {
+            if (X == 0){
+                if (Top(SM) != Nil){
+                    Pop(&SM, &X);
+                    continue;
+                }
+            } else {
+                Push(&SM, X);
+            }
+        }
+    }
+    int min = (Top(SN) <= Top(SM) ? Top(SN) : Top(SM));
+    if (min != -1){
+        for (i=0;i<=min;i++){
+            int X;
+            if (IsEmpty(SN) || IsEmpty(SM)) break;
+
+            if (InfoTop(SN) == InfoTop(SM)){
+                Pop(&SN, &X);
+                Pop(&SM, &X);
+            }
+        }
+    }
+    printf((IsEmpty(SN) && IsEmpty(SM)) ? ("Sama\n") : ("Tidak sama\n"));
+    return 0;
+}
